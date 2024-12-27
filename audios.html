@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Müzik Çalar</title>
+
+<style>
+    body {
+            background-color: rgba(0, 0, 0, 0.884);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100vh; 
+            flex-direction: column;
+        }
+    
+    
+    div {
+        text-align:center;
+        line-height: normal;
+    }
+    .Müzik Çalar {
+            text-align: center;
+            width: 100%;
+    }
+    h1 {
+     
+     background-color:rgba(0, 0, 0, 0.54);
+     border: 2px solid rgb(8, 12, 41) ;
+     height: 38px;
+     border-style:initial;
+     border-radius: 50px;
+     width: 500px;
+     text-align:center;
+     cursor: pointer;
+     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif ;
+     margin: 10px auto;
+     color: palevioletred;
+     padding: 8px 0;
+
+    
+    }
+    #progressBar {
+            
+            width: 80%;
+            margin: 20px auto;
+            
+        }
+    .controls {
+        text-align:center;
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        }
+
+        .controls button {
+            font-size: 18px;
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .controls button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+       
+        .song-box-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: auto;
+            margin-bottom: 20px;
+        }
+        .song-box {
+            color: palevioletred;
+            margin-top: 10px;
+        }
+        .active-song-name {
+            border: 2px solid black;
+            background-color: black;
+            border-style:initial;
+            border-radius: 50px;
+            width: 500px;
+            color: palevioletred;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            margin-top: 50px;
+        }
+
+ </style>
+ </head>
+
+ <div id="currentSongName" class="active-song-name">No song playing</div>
+ <input type="range" id="progressBar" value="0" max="100" step="1" />
+ <div class="controls">
+     <button id="prev10Sec">⬅️ 10s</button>
+     <button id="prev">⏮️</button>
+     <button id="play">◀️</button>
+     <button id="next">⏭️</button>
+     <button id="next10Sec">10s ➡️</button>
+     
+ </div>
+
+    <div class="Müzik Çalar">
+    <div class="song-box-container">
+    <h1 class="song-box" style="color:palevioletred"; >Lost In Dreams </h1>
+    <audio src="./audios/LostInDreams.mp3"  > 
+    </audio>
+    <h1 class="song-box" style="color:palevioletred"> A Long Way</h1>
+    <audio src="./audios/ALongWay.mp3" >
+    </audio>
+    <h1 class="song-box" style="color:palevioletred"> Better Day</h1>
+    <audio src="./audios/BetterDay.mp3" >
+    </audio>
+    <h1 class="song-box" style="color:palevioletred"> Midnight Forest</h1>
+    <audio src="./audios/MidnightForest.mp3" >
+    </audio>
+    <h1 class="song-box" style="color:palevioletred"> Once In Paris</h1>
+    <audio src="./audios/OnceInParis.mp3" >
+    </audio>
+    
+
+    
+</div>
+
+
+<script>
+    
+    const audios= document.querySelectorAll("audio");
+    const songTitles = document.querySelectorAll(".song-box");
+    const currentSongName = document.getElementById("currentSongName"); 
+    let currentAudioIndex = 0;
+    const playButton= document.getElementById("play");
+    const prevButton= document.getElementById("prev");
+    const nextButton= document.getElementById("next");
+    const progressBar = document.getElementById("progressBar");
+    
+    const updateAudioPlayer= () => {
+        audios. forEach ( ( audio,index)=>{
+            if (index === currentAudioIndex){
+                audio.play();
+                playButton.textContent= "⏹️";
+                currentSongName.textContent = songTitles[index].textContent;
+            }
+            else{
+                audio.pause();
+                audio.currentTime= 0;
+            }
+        });
+        songTitles.forEach((title, index) => {
+                if (index === currentAudioIndex) {
+                    title.classList.add("active-song");
+                } else {
+                    title.classList.remove("active-song");
+                }
+            });
+    };
+
+    playButton.addEventListener("click", ()=> {
+        const currentAudio= audios[currentAudioIndex];
+        if (currentAudio.paused){
+            currentAudio.play();
+        playButton.textContent= "⏹️";
+        currentSongName.textContent = songTitles[currentAudioIndex].textContent;
+        }
+        else {
+            currentAudio.pause();
+            playButton.textContent="◀️";
+        }
+    });
+
+    prevButton.addEventListener("click",()=>{
+        
+        if (currentAudioIndex > 0){
+            currentAudioIndex--;
+        } else{
+            currentAudioIndex= audios.length - 1;
+        }
+        updateAudioPlayer();
+
+    });
+    nextButton.addEventListener("click",()=>{
+        
+        if(currentAudioIndex< audios.length-1){
+            currentAudioIndex++;
+        } else{
+            currentAudioIndex = 0;
+        }
+        updateAudioPlayer();
+        
+
+    });
+    songTitles.forEach((title, index) => {
+            title.addEventListener("click", () => {
+                currentAudioIndex = index; 
+                updateAudioPlayer(); 
+            });
+        });
+
+
+    updateAudioPlayer();
+    audios.forEach((audio) => {
+            audio.addEventListener("timeupdate", () => {
+                const currentAudio = audios[currentAudioIndex];
+                if (currentAudio && !currentAudio.paused) {
+                    
+                    const progress = (currentAudio.currentTime / currentAudio.duration) * 100;
+                    progressBar.value = progress;
+                }
+            });
+        });
+        progressBar.addEventListener("input", () => {
+            const currentAudio = audios[currentAudioIndex];
+            const newTime = (progressBar.value / 100) * currentAudio.duration;
+            currentAudio.currentTime = newTime;
+        });
+
+        const rewind = () => {
+        const currentAudio = audios[currentAudioIndex];
+        currentAudio.currentTime -= 10;
+    };
+
+    const forward = () => {
+        const currentAudio = audios[currentAudioIndex];
+        currentAudio.currentTime += 10;
+    };
+
+    document.getElementById("prev10Sec").addEventListener("click", rewind);
+        document.getElementById("next10Sec").addEventListener("click", forward);
+
+
+</script>
+</body>
+</html>
